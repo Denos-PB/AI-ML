@@ -1,2 +1,4 @@
 /.idea
-/venv
+/.venv
+Regression/datasets/
+Regression/models/
