@@ -47,4 +47,37 @@ def divisor(num):
     while True:
         yield None
 
+def logger(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        parts = [str(a) for a in args]
+        parts.extend(str(v) for v in kwargs.values())
+        print(f"Executing of function {func.__name__} with arguments {', '.join(parts)}...")
+        return result
+    return wrapper
 
+@logger
+def concat(*args, **kwargs):
+    parts = [str(a) for a in args]
+    parts.extend(str(v) for v in kwargs.values())
+    return ''.join(parts)
+
+def randomWord(words):
+    import random
+    if not words:
+        while True:
+            yield None
+    pool = list(words)
+    random.shuffle(pool)
+    i = 0
+    while True:
+        yield pool[i]
+        i += 1
+        if i >= len(pool):
+            prev = pool
+            pool = list(words)
+            if len(pool) > 1:
+                random.shuffle(pool)
+                while pool == prev:
+                    random.shuffle(pool)
+            i = 0
