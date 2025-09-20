@@ -81,3 +81,277 @@ def randomWord(words):
                 while pool == prev:
                     random.shuffle(pool)
             i = 0
+
+
+# class Employee:
+#     def __init__(self,firstname,lastname,salary):
+#         self.firstname = str(firstname)
+#         self.lastname = str(lastname)
+#         self.salary = int(salary)
+#
+#     @staticmethod
+#     def from_string(s):
+#         parts = s.split("-")
+#         first,last,sal = parts
+#         return Employee(first,last,int(sal))
+
+class Pizza:
+    _order_counter = 0
+
+    def __init__(self,ingredients):
+        Pizza._order_counter += 1
+        self.order_number = Pizza._order_counter
+        self.ingredients = list(ingredients)
+
+    @classmethod
+    def garden_feast(cls):
+        return cls(["spinach", "olives", "mushroom"])
+
+    @classmethod
+    def hawaiian(cls):
+        return cls(["ham", "pineapple"])
+
+    @classmethod
+    def meat_festival(cls):
+        return cls(["beef", "meatball", "bacon"])
+
+class Employee:
+    def __init__(self,name,**kwargs):
+        self.name = name
+        parts = self.name.split()
+        self.name,self.lastname = parts
+        for key,value in kwargs.items():
+            setattr(self,key,value)
+
+
+
+
+class Testpaper:
+    def __init__(self,subject,markscheme,pass_mark):
+        self.subject = subject
+        self.markscheme = markscheme
+        self.pass_mark = pass_mark
+
+class Student:
+    def __init__(self):
+        self.tests_taken = "No tests taken"
+
+    def take_test(self,testpaper,answear):
+        correct = sum(1 for c,a in zip(testpaper.markscheme,answear) if c == a)
+        total = len(testpaper.markscheme)
+        percentage = round((correct/total)*100)
+
+        required = int(testpaper.pass_mark.strip().rstrip('%'))
+
+        result_str = f"Passed! ({percentage}%)" if percentage >= required else f"Failed! ({percentage}%)"
+
+        if self.tests_taken == "No tests taken":
+            self.tests_taken = {}
+
+        self.tests_taken[testpaper.subject] = result_str
+
+class Gallows:
+    def __init__(self):
+        self.words = []
+        self.game_over = False
+
+    def play(self,word):
+        if self.game_over:
+            return "game over"
+
+        if not isinstance(word,str) or len(word) == 0:
+            self.game_over = True
+            return "game over"
+
+        if word in self.words:
+            self.game_over = True
+            return "game over"
+
+        if self.words:
+            last_char = self.words[-1][-1].lower()
+            first_char = word[0].lower()
+            if first_char != last_char:
+                self.game_over = True
+                return "game over"
+
+        self.words.append(word)
+        return self.words
+
+    def restart(self):
+        self.words = []
+        self.game_over = False
+        return "game restarted"
+
+
+
+class Book:
+    def __init__(self, title, author, year, quantity=1):
+        self.title = title
+        self.author = author
+        self.year = int(year)
+        self.quantity = max(0, int(quantity))
+
+    def display_info(self):
+        print(f"Book: '{self.title}' by {self.author} ({self.year}) - Copies: {self.quantity}")
+
+    def __str__(self):
+        return f"Title: {self.title}, Author: {self.author}, Year: {self.year}, Quantity: {self.quantity}"
+
+
+class EBook(Book):
+    def __init__(self, title, author, year, format_type: str = "PDF", quantity= 1):
+        super().__init__(title, author, year, quantity)
+        self.format_type = format_type
+
+    def display_info(self):
+        print(
+            f"EBook: '{self.title}' by {self.author} ({self.year}) - Format: {self.format_type} - Copies: {self.quantity}"
+        )
+
+    def __str__(self):
+        base = super().__str__()
+        return f"{base} Format: {self.format_type}"
+
+
+
+class Library:
+    def __init__(self):
+        self.books: list[Book] = []
+        self.book_count = 0
+
+    def _find_index_by_identity(self, title, author, year):
+        t, a, y = title.strip().lower(), author.strip().lower(), int(year)
+        for idx, b in enumerate(self.books):
+            if b.title.strip().lower() == t and b.author.strip().lower() == a and int(b.year) == y:
+                return idx
+        return None
+
+    def find_book_by_title(self, title):
+        t = title.strip().lower()
+        for b in self.books:
+            if b.title.strip().lower() == t:
+                return b
+        return None
+
+    def add_book(self, book: Book):
+        idx = self._find_index_by_identity(book.title, book.author, book.year)
+        if idx is not None:
+            self.books[idx].quantity += int(book.quantity)
+        else:
+            self.books.append(book)
+        self.book_count += int(book.quantity)
+
+    def display_books(self):
+        if not self.books:
+            print("Library has no books.")
+            return
+        print("Books in the Library:")
+        for b in self.books:
+            print(str(b))
+
+class Customer:
+    def __init__(self, name):
+        self.name = name
+        self.borrowed_books: list[Book] = []
+
+    def __str__(self):
+        return f"{self.name} borrowed books:{self.borrowed_books}"
+
+    def borrow_book(self, arg1, title=None):
+        if isinstance(arg1, Library):
+            library = arg1
+            if not isinstance(title, str) or not title.strip():
+                print(f"{self.name}: invalid title.")
+                return False
+            book = library.find_book_by_title(title)
+            if book is None:
+                print(f"{self.name}: '{title}' not found in library.")
+                return False
+            if book.quantity <= 0:
+                print(f"{self.name}: '{book.title}' is currently unavailable.")
+                return False
+            book.quantity -= 1
+            library.book_count -= 1
+            self.borrowed_books.append(book)
+            print(f"{self.name} borrowed '{book.title}'.")
+            return True
+
+        book = arg1
+        if not isinstance(book, Book):
+            print(f"{self.name}: invalid book reference.")
+            return False
+        if book.quantity <= 0:
+            print(f"{self.name}: '{book.title}' is currently unavailable.")
+            return False
+        book.quantity -= 1
+        self.borrowed_books.append(book)
+        print(f"{self.name} borrowed '{book.title}'.")
+        return True
+
+    def return_book(self, arg1, title=None):
+        if isinstance(arg1, Library):
+            library = arg1
+            if not isinstance(title, str) or not title.strip():
+                print(f"{self.name}: invalid title.")
+                return False
+            idx = next((i for i, b in enumerate(self.borrowed_books)
+                        if b.title.strip().lower() == title.strip().lower()), None)
+            if idx is None:
+                print(f"{self.name}: You have not borrowed '{title}'.")
+                return False
+            book = self.borrowed_books.pop(idx)
+            lib_idx = library._find_index_by_identity(book.title, book.author, book.year)
+            if lib_idx is None:
+                library.books.append(Book(book.title, book.author, book.year, quantity=1))
+            else:
+                library.books[lib_idx].quantity += 1
+            library.book_count += 1
+            print(f"{self.name} returned '{book.title}'.")
+            return True
+
+        book = arg1
+        if not isinstance(book, Book):
+            print(f"{self.name}: invalid book reference.")
+            return False
+        try:
+            self.borrowed_books.remove(book)
+        except ValueError:
+            print(f"{self.name}: You have not borrowed '{book.title}'.")
+            return False
+        book.quantity += 1
+        print(f"{self.name} returned '{book.title}'.")
+        return True
+
+class LibraryManagementSystem:
+    def __init__(self, library: Library | None = None):
+        self.library = library if library is not None else Library()
+        self.customers: list[Customer] = []
+
+    def register_customer(self, customer: Customer):
+        if any(c.name.strip().lower() == customer.name.strip().lower() for c in self.customers):
+            print(f"Customer {customer.name} is already registered in the system.")
+            return
+        self.customers.append(customer)
+        print(f"Customer {customer.name} registered in the system.")
+
+    def _get_customer(self, name_or_customer):
+        if isinstance(name_or_customer, Customer):
+            n = name_or_customer.name.strip().lower()
+        else:
+            n = str(name_or_customer).strip().lower()
+        for c in self.customers:
+            if c.name.strip().lower() == n:
+                return c
+        return None
+
+    def display_customer_books(self, customer_name_or_obj):
+        customer = self._get_customer(customer_name_or_obj)
+        if customer is None:
+            print(f"Customer '{customer_name_or_obj}' not found.")
+            return
+        print(f"Books borrowed by {customer.name}:")
+        for b in customer.borrowed_books:
+            print(str(b))
+
+    def display_all_books(self):
+        self.library.display_books()
