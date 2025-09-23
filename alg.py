@@ -439,30 +439,3 @@ class Task:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    import logging
-
-    logging.
-
-    def average(numbers):
-
-    # type your code here
-
-    average([1, 2, 3, 4, 5])
-    average([10, -20, -30])
-    average([])
-    average([1, 2, 3, 0, 5])
-    average([1, 2, "three", 4, 5])
