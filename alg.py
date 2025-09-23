@@ -355,3 +355,114 @@ class LibraryManagementSystem:
 
     def display_all_books(self):
         self.library.display_books()
+
+from functools import total_ordering
+from typing import Iterable, Callable
+
+@total_ordering
+class Task:
+    def __init__(self, title: str, priority: int, tags: Iterable[str] | None = None, done: bool = False):
+        if not isinstance(title, str) or not title.strip():
+            raise ValueError("title must be a non-empty string")
+        if not isinstance(priority, int) or priority < 0:
+            raise ValueError("priority must be a non-negative int")
+        self.title = title.strip()
+        self.priority = priority
+        self.tags = tuple((t or "").strip() for t in (tags or ()))
+        self.done = bool(done)
+
+    def __str__(self):
+        status = "done" if self.done else "open"
+        tags = ", ".join(self.tags) if self.tags else "-"
+        return f"Task '{this.title}' (priority={self.priority}, status={status}, tags=[{tags}])"
+
+    def __repr__(self):
+        return f"Task(title={self.title!r}, priority={self.priority!r}, tags={self.tags!r}, done={self.done!r})"
+
+    def __eq__(self, other):
+        if not isinstance(other, Task):
+            return NotImplemented
+        return (self.title, self.priority, self.tags, self.done) == (other.title, other.priority, other.tags, other.done)
+
+    def __lt__(self, other):
+        if not isinstance(other, Task):
+            return NotImplemented
+        return (self.priority, self.title) < (other.priority, other.title)
+
+    def __hash__(self):
+        return hash((self.title, self.priority, self.tags, self.done))
+
+    def mark_done(self):
+        self.done = True
+        return self
+
+    def add_tag(self, tag: str):
+        tag = (tag or "").strip()
+        if not tag:
+            return self
+        if tag not in self.tags:
+            self.tags = tuple(list(self.tags) + [tag])
+        return self
+
+    def remove_tag(self, tag: str):
+        tag = (tag or "").strip()
+        if not tag:
+            return self
+        self.tags = tuple(t for t in self.tags if t != tag)
+        return self
+
+    def as_dict(self, key_transform: Callable[[str], str] = lambda k: k):
+        base = {
+            "title": self.title,
+            "priority": self.priority,
+            "tags": list(self.tags),
+            "done": self.done,
+        }
+        return {key_transform(k): v for k, v in base.items()}
+
+    @staticmethod
+    def from_string(s: str):
+        parts = [p.strip() for p in (s or "").split("|")]
+        if len(parts) < 2:
+            raise ValueError("format: 'title | priority | [tags] | [done]'")
+        title = parts[0]
+        priority = int(parts[1])
+        tags = []
+        done = False
+        if len(parts) >= 3 and parts[2]:
+            tags = [t.strip() for t in parts[2].split(",") if t.strip()]
+        if len(parts) >= 4 and parts[3]:
+            done = parts[3].lower() in ("1", "true", "yes", "y")
+        return Task(title, priority, tags, done)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    import logging
+
+    logging.
+
+    def average(numbers):
+
+    # type your code here
+
+    average([1, 2, 3, 4, 5])
+    average([10, -20, -30])
+    average([])
+    average([1, 2, 3, 0, 5])
+    average([1, 2, "three", 4, 5])
