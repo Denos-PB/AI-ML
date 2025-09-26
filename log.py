@@ -1,25 +1,23 @@
 import logging
+import math
 
-logging.basicConfig(
-    filename="app.log",
-    filemode="w",
-    level=logging.INFO,
-    format="%(name)s - %(levelname)s - %(message)s",
-)
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
-logger = logging.getLogger()  # root logger
-
-
-def average(numbers):
+def findingTangent(sin_alpha, cos_alpha):
+    logging.info(f"A value has been entered sin(alpha) = {sin_alpha}")
+    logging.info(f"A value has been entered cos(alpha) = {cos_alpha}")
     try:
-        if len(numbers) == 0:
-            raise ValueError(logging.debug("The list is empty"))
+        if not isinstance(sin_alpha, (int, float)) or not isinstance(cos_alpha, (int, float)):
+            logging.critical("The tangent of the angle alpha is not defined.")
+        elif cos_alpha == 0:
+            logging.warning("The cosine of the angle alpha = 0. The tangent is not defined.")
+        else:
+            tan_alpha = sin_alpha / cos_alpha
+            logging.debug(f"The value of the tangent of the angle alpha is found = {tan_alpha}")
+    except:
+        logging.critical("The tangent of the angle alpha is not defined.")
 
 
-
-
-average([1, 2, 3, 4, 5])
-average([10, -20, -30])
-average([])
-average([1, 2, 3, 0, 5])
-average([1, 2, "three", 4, 5])
+findingTangent(0.5, math.sqrt(3) / 2)
+findingTangent(0.5, 'w')
+findingTangent(0.5, 0)
