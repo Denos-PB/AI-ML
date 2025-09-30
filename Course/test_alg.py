@@ -1,11 +1,9 @@
 # test_alg.py
 import io
-import sys
-import types
-import unittest
+import test_u
 from contextlib import redirect_stdout
 
-import alg
+from Course import alg
 
 
 class TestHigherOrderAndLambdas(unittest.TestCase):
